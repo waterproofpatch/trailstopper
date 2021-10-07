@@ -16,10 +16,15 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
+
+    private ArrayList<Stock> stocks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        stocks = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.makeRequest("MSFT");
@@ -27,11 +32,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void makeRequest(String ticker) {
         final TextView textView = (TextView) findViewById(R.id.volleyResponseTextView);
+
         textView.setMovementMethod(new ScrollingMovementMethod());
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="https://finance.yahoo.com/quote/" + ticker;
+        String url = "https://finance.yahoo.com/quote/" + ticker;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -39,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         JSONObject obj = ResponseJsonParser.parseIntoJson(response);
+                        Stock stock = new Stock(obj);
+                        stocks.add(stock);
 
                         // Display the first 500 characters of the response string.
                         textView.setText("Response is: " + obj.toString());
@@ -50,9 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText("That didn't work! " + error.toString());
             }
         });
-
-// Add the request to the RequestQueue.
+        // Add the request to the RequestQueue.
         queue.add(stringRequest);
-
     }
 }
