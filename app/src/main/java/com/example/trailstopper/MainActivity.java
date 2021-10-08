@@ -29,18 +29,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        stocks = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textViewOutput = (TextView) findViewById(R.id.volleyResponseTextView);
-        buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
+        this.stocks = new ArrayList<>();
+
+        // discover the UI components
+        this.initUiElements();
 
         // register listeners with the GUI elements
-        initActions();
+        this.registerListeners();
     }
 
-    private void initActions() {
+    private void initUiElements() {
+        this.textViewOutput = (TextView) findViewById(R.id.volleyResponseTextView);
+        this.buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
+    }
+
+    private void registerListeners() {
         this.buttonMakeRequest.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
