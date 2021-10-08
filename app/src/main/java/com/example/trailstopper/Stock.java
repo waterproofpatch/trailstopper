@@ -11,6 +11,10 @@ public class Stock {
         this.stockObject = stockObject;
     }
 
+    public String getRaw() {
+        return this.stockObject.toString();
+    }
+
     public String getTicker() {
         try {
             return this.stockObject.getString("symbol");

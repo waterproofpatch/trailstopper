@@ -57,6 +57,13 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    private void updateView() {
+        for (Stock s:stocks) {
+            //this.textViewOutput.setText("Stock is: " + s.getTicker());
+            this.textViewOutput.setText(s.getRaw());
+        }
+    }
+
     private void makeRequest(String ticker, final TextView textView) {
 
         textView.setMovementMethod(new ScrollingMovementMethod());
@@ -73,9 +80,10 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject obj = ResponseJsonParser.parseIntoJson(response);
                         Stock stock = new Stock(obj);
                         stocks.add(stock);
+                        updateView();
 
                         // Display the first 500 characters of the response string.
-                        textView.setText("Response is: " + obj.toString());
+                        //textView.setText("Response is: " + obj.toString());
                     }
                 }, new Response.ErrorListener() {
             @Override
