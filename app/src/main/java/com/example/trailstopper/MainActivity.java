@@ -7,6 +7,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Stock> stocks;
     private TextView textViewOutput;
     private Button buttonMakeRequest;
+    private EditText editTextTicker;
 
 
     @Override
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private void initUiElements() {
         this.textViewOutput = (TextView) findViewById(R.id.volleyResponseTextView);
         this.buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
+        this.editTextTicker = (EditText) findViewById(R.id.editTextTicker);
     }
 
     private void registerListeners() {
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        makeRequest("MSFT", textViewOutput);
+                        makeRequest(editTextTicker.getText().toString().toLowerCase().trim(), textViewOutput);
                     }
                 }
         );
