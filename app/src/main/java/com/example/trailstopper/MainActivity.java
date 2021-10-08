@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -21,17 +23,35 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Stock> stocks;
+    private TextView textViewOutput;
+    private Button buttonMakeRequest;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         stocks = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.makeRequest("MSFT");
+
+        textViewOutput = (TextView) findViewById(R.id.volleyResponseTextView);
+        buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
+
+        // register listeners with the GUI elements
+        initActions();
     }
 
-    private void makeRequest(String ticker) {
-        final TextView textView = (TextView) findViewById(R.id.volleyResponseTextView);
+    private void initActions() {
+        this.buttonMakeRequest.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        makeRequest("MSFT", textViewOutput);
+                    }
+                }
+        );
+    }
+
+    private void makeRequest(String ticker, final TextView textView) {
 
         textView.setMovementMethod(new ScrollingMovementMethod());
 
