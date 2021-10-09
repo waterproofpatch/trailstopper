@@ -1,6 +1,8 @@
 package com.example.trailstopper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -24,6 +26,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private RecyclerView stockRecyclerView;
+    private StockAdapter stockAdapter;
     private ArrayList<Stock> stocks;
     private TextView textViewOutput;
     private Button buttonMakeRequest;
@@ -35,20 +39,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        stockRecyclerView = findViewById(R.id.idRecyclerViewStock);
+
         this.stocks = new ArrayList<>();
 
+        // we are initializing our adapter class and passing our arraylist to it.
+        stockAdapter = new StockAdapter(this, stocks);
+
+        // below line is for setting a layout manager for our recycler view.
+        // here we are creating vertical list so we will provide orientation as vertical
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        // in below two lines we are setting layoutmanager and adapter to our recycler view.
+        stockRecyclerView.setLayoutManager(linearLayoutManager);
+        stockRecyclerView.setAdapter(stockAdapter);
+
+        makeRequest("MSFT");
+
         // discover the UI components
-        this.initUiElements();
+        //this.initUiElements();
 
         // register listeners with the GUI elements
-        this.registerListeners();
+        //this.registerListeners();
     }
 
     private void initUiElements() {
-        this.textViewOutput = (TextView) findViewById(R.id.volleyResponseTextView);
-        this.buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
-        this.editTextTicker = (EditText) findViewById(R.id.editTextTicker);
+        // discover the UI elements and save them off
+        //this.textViewOutput = (TextView) findViewById(R.id.volleyResponseTextView);
+        //this.buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
+        //this.editTextTicker = (EditText) findViewById(R.id.editTextTicker);
 
+        // update behaviors
         this.textViewOutput.setMovementMethod(new ScrollingMovementMethod());
     }
 
@@ -57,13 +78,24 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        makeRequest(editTextTicker.getText().toString().toLowerCase().trim(), textViewOutput);
+                        makeRequest(editTextTicker.getText().toString().toLowerCase().trim());
                     }
                 }
         );
     }
 
     private void updateView() {
+        if (stockAdapter != null) {
+            stockAdapter.notifyDataSetChanged();
+        }
+        else {
+            Log.e("updateView", "stockAdapter is null!");
+        }
+
+        if (this.textViewOutput == null) {
+            Log.e("updateView", "not updating because we have a null textViewOutout");
+            return;
+        }
         for (Stock s:stocks) {
             this.textViewOutput.setText(s.getLongName() + " - " + s.getPrice());
         }
@@ -73,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         this.textViewOutput.setText("Error: " + error);
     }
 
-    private void makeRequest(final String ticker, final TextView textView) {
+    private void makeRequest(final String ticker) {
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -107,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", "That didn't work: " + error.toString());
-                textView.setText("That didn't work! " + error.toString());
+                setError("That didn't work! " + error.toString());
             }
         });
         // Add the request to the RequestQueue.
