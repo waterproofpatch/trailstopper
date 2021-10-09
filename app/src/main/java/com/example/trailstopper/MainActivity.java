@@ -5,12 +5,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,26 +30,13 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonMakeRequest;
     private EditText editTextTicker;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        stockRecyclerView = findViewById(R.id.idRecyclerViewStock);
-
+        // new backing for the recycler view
         this.stocks = new ArrayList<>();
-
-        // we are initializing our adapter class and passing our arraylist to it.
-        stockAdapter = new StockAdapter(this, stocks);
-
-        // below line is for setting a layout manager for our recycler view.
-        // here we are creating vertical list so we will provide orientation as vertical
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-
-        // in below two lines we are setting layoutmanager and adapter to our recycler view.
-        stockRecyclerView.setLayoutManager(linearLayoutManager);
-        stockRecyclerView.setAdapter(stockAdapter);
 
         // discover the UI components
         this.initUiElements();
@@ -64,6 +49,18 @@ public class MainActivity extends AppCompatActivity {
         // discover the UI elements and save them off
         this.buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
         this.editTextTicker = (EditText) findViewById(R.id.editTextTicker);
+        this.stockRecyclerView = findViewById(R.id.idRecyclerViewStock);
+
+        // we are initializing our adapter class and passing our arraylist to it.
+        this.stockAdapter = new StockAdapter(this, this.stocks);
+
+        // below line is for setting a layout manager for our recycler view.
+        // here we are creating vertical list so we will provide orientation as vertical
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        // in below two lines we are setting layoutmanager and adapter to our recycler view.
+        this.stockRecyclerView.setLayoutManager(linearLayoutManager);
+        this.stockRecyclerView.setAdapter(this.stockAdapter);
     }
 
     private void registerListeners() {
