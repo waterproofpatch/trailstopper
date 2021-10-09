@@ -6,22 +6,22 @@ import org.json.JSONObject;
 
 public class Stock {
     private final JSONObject stockObject;
+    private final String ticker;
+    private final String raw;
 
-    public Stock(JSONObject stockObject) {
+    public Stock(JSONObject stockObject) throws JSONException {
         this.stockObject = stockObject;
+        this.ticker = this.stockObject.getString("symbol");
+        this.raw = this.stockObject.toString();
+
     }
 
     public String getRaw() {
-        return this.stockObject.toString();
+        return this.raw;
     }
 
     public String getTicker() {
-        try {
-            return this.stockObject.getString("symbol");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return this.ticker;
     }
 
 }

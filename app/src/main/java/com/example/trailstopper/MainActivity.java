@@ -17,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         this.textViewOutput = (TextView) findViewById(R.id.volleyResponseTextView);
         this.buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
         this.editTextTicker = (EditText) findViewById(R.id.editTextTicker);
+
+        this.textViewOutput.setMovementMethod(new ScrollingMovementMethod());
     }
 
     private void registerListeners() {
@@ -62,14 +65,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateView() {
         for (Stock s:stocks) {
-            //this.textViewOutput.setText("Stock is: " + s.getTicker());
             this.textViewOutput.setText(s.getRaw());
         }
     }
 
-    private void makeRequest(String ticker, final TextView textView) {
+    private void setError(String error) {
+        this.textViewOutput.setText("Error: " + error);
+    }
 
-        textView.setMovementMethod(new ScrollingMovementMethod());
+    private void makeRequest(final String ticker, final TextView textView) {
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -80,13 +84,24 @@ public class MainActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        JSONObject obj = ResponseJsonParser.parseIntoJson(response);
-                        Stock stock = new Stock(obj);
+                        JSONObject obj = null;
+                        try {
+                            obj = ResponseJsonParser.parseIntoJson(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            setError("Failed parsing stock data for " + ticker + ": " + e.getMessage());
+                            return;
+                        }
+                        Stock stock = null;
+                        try {
+                            stock = new Stock(obj);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            setError("Failed constructing stock data for " + ticker + ": " + e.getMessage());
+                            return;
+                        }
                         stocks.add(stock);
                         updateView();
-
-                        // Display the first 500 characters of the response string.
-                        //textView.setText("Response is: " + obj.toString());
                     }
                 }, new Response.ErrorListener() {
             @Override
