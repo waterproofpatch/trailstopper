@@ -68,10 +68,25 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        makeRequest(editTextTicker.getText().toString().toLowerCase().trim());
+                        String ticker = editTextTicker.getText().toString().toLowerCase().trim();
+                        if (stockExists(ticker) == false) {
+                            makeRequest(ticker);
+                        } else {
+                            Log.e("onClick", "stock " + ticker + " exists!");
+                        }
+
                     }
                 }
         );
+    }
+
+    private boolean stockExists(String ticker) {
+        for (Stock s : this.stocks) {
+            if (s.getTicker().compareToIgnoreCase(ticker) == 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void updateView() {
