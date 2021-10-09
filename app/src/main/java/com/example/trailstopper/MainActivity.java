@@ -14,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -21,6 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -104,43 +107,83 @@ public class MainActivity extends AppCompatActivity {
 
     private void makeRequest(final String ticker) {
 
-        // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
+        queue.start();
+
+        // Instantiate the RequestQueue.
         String urlCurrentDay = "https://finance.yahoo.com/quote/" + ticker;
         String url5day = "https://query1.finance.yahoo.com/v8/finance/chart/"+ticker+"?region=US&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=5d&corsDomain=finance.yahoo.com&.tsrc=finance";
+        final int numRequests = 2;
+        final JSONObject[] jsonObjects = new JSONObject[numRequests];
+        final CountDownLatch countdownLatch = new CountDownLatch(numRequests);
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, urlCurrentDay,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        JSONObject obj = null;
+                        Log.i("stringRequest", "got response!");
                         try {
-                            obj = ResponseJsonParser.parseIntoJson(response);
+                            jsonObjects[0] = ResponseJsonParser.parseIntoJson(response);
                         } catch (JSONException e) {
                             e.printStackTrace();
                             setError("Failed parsing stock data for " + ticker + ": " + e.getMessage());
                             return;
                         }
-                        Stock stock = null;
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                setError("That didn't work! " + error.toString());
+            }
+        });
+
+        // 5 day request
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url5day, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i("jsonObjectRequest", "got response!");
+                        jsonObjects[1] = response;
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        setError("That didn't work! " + error.toString());
+                    }
+                });
+
+        // Add the requests to the RequestQueue.
+        queue.add(stringRequest);
+        queue.add(jsonObjectRequest);
+
+        queue.addRequestEventListener(new RequestQueue.RequestEventListener() {
+            @Override
+            public void onRequestEvent(Request<?> request, int event) {
+                if (event == RequestQueue.RequestEvent.REQUEST_FINISHED) {
+                    Log.i("onRequestEvent", "Request " + request + " is finished");
+                    countdownLatch.countDown();
+
+                    if (countdownLatch.getCount() == 0) {
+                        // create the stock object
                         try {
-                            stock = new Stock(obj);
+                            Stock stock = new Stock(jsonObjects[0]);
+                            stocks.add(stock);
                         } catch (JSONException e) {
                             e.printStackTrace();
                             setError("Failed constructing stock data for " + ticker + ": " + e.getMessage());
                             return;
                         }
-                        stocks.add(stock);
+
+                        // update the view now that we have a new stock object
                         updateView();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", "That didn't work: " + error.toString());
-                setError("That didn't work! " + error.toString());
+                }
             }
         });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-    }
+
+        queue.start();
+        }
 }
