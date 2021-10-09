@@ -35,10 +35,27 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".MainActivity">
 
+        <Button
+            android:id="@+id/buttonMakeRequest"
+            android:layout_width="181dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editTextTicker"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="-48dp"
+            android:layout_marginRight="10dp"
+            android:text="Add" />
+
+    <EditText
+        android:id="@+id/editTextTicker"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/buttonMakeRequest" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/idRecyclerViewStock"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:layout_below="@id/buttonMakeRequest">
 
     </androidx.recyclerview.widget.RecyclerView>
 

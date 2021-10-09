@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView stockRecyclerView;
     private StockAdapter stockAdapter;
     private ArrayList<Stock> stocks;
-    private TextView textViewOutput;
     private Button buttonMakeRequest;
     private EditText editTextTicker;
 
@@ -54,23 +53,17 @@ public class MainActivity extends AppCompatActivity {
         stockRecyclerView.setLayoutManager(linearLayoutManager);
         stockRecyclerView.setAdapter(stockAdapter);
 
-        makeRequest("MSFT");
-
         // discover the UI components
-        //this.initUiElements();
+        this.initUiElements();
 
         // register listeners with the GUI elements
-        //this.registerListeners();
+        this.registerListeners();
     }
 
     private void initUiElements() {
         // discover the UI elements and save them off
-        //this.textViewOutput = (TextView) findViewById(R.id.volleyResponseTextView);
-        //this.buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
-        //this.editTextTicker = (EditText) findViewById(R.id.editTextTicker);
-
-        // update behaviors
-        this.textViewOutput.setMovementMethod(new ScrollingMovementMethod());
+        this.buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
+        this.editTextTicker = (EditText) findViewById(R.id.editTextTicker);
     }
 
     private void registerListeners() {
@@ -91,18 +84,9 @@ public class MainActivity extends AppCompatActivity {
         else {
             Log.e("updateView", "stockAdapter is null!");
         }
-
-        if (this.textViewOutput == null) {
-            Log.e("updateView", "not updating because we have a null textViewOutout");
-            return;
-        }
-        for (Stock s:stocks) {
-            this.textViewOutput.setText(s.getLongName() + " - " + s.getPrice());
-        }
     }
 
     private void setError(String error) {
-        this.textViewOutput.setText("Error: " + error);
     }
 
     private void makeRequest(final String ticker) {
