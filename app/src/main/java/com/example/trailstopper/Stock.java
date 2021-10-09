@@ -5,13 +5,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Stock {
-    private final JSONObject stockObject;
-    private final String ticker;
-    private final String raw;
-    private final String price;
-    private final String longName;
-    private final String averageDailyVolume3Month;
-    private final String regularMarketPreviousClose;
+    private String ticker;
+    private String raw;
+    private String price;
+    private String longName;
+    private String averageDailyVolume3Month;
+    private String regularMarketPreviousClose;
 
     public String getPrice() {
         return price;
@@ -36,15 +35,17 @@ public class Stock {
     public String getTicker() {
         return ticker;
     }
-    public Stock(JSONObject stockObject) throws JSONException {
-        this.stockObject = stockObject;
-        this.ticker = this.stockObject.getString("symbol");
-        this.raw = this.stockObject.toString();
-        this.price = this.stockObject.getJSONObject("price").getJSONObject("regularMarketPrice").getString("fmt");
-        this.regularMarketPreviousClose = this.stockObject.getJSONObject("price").getJSONObject("regularMarketPreviousClose").getString("fmt");
-        this.longName = this.stockObject.getJSONObject("price").getString("longName");
-        this.averageDailyVolume3Month = this.stockObject.getJSONObject("price").getJSONObject("averageDailyVolume3Month").getString("longFmt");
+
+    private void getAttributes(JSONObject stockObject) throws JSONException {
+        this.ticker = stockObject.getString("symbol");
+        this.raw = stockObject.toString();
+        this.price = stockObject.getJSONObject("price").getJSONObject("regularMarketPrice").getString("fmt");
+        this.regularMarketPreviousClose = stockObject.getJSONObject("price").getJSONObject("regularMarketPreviousClose").getString("fmt");
+        this.longName = stockObject.getJSONObject("price").getString("longName");
+        this.averageDailyVolume3Month = stockObject.getJSONObject("price").getJSONObject("averageDailyVolume3Month").getString("longFmt");
     }
 
-
+    public Stock(JSONObject stockObject) throws JSONException {
+        this.getAttributes(stockObject);
+      }
 }

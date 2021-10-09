@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         // here we are creating vertical list so we will provide orientation as vertical
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
-        // in below two lines we are setting layoutmanager and adapter to our recycler view.
+        // in below two lines we are setting LayoutManager and adapter to our recycler view.
         this.stockRecyclerView.setLayoutManager(linearLayoutManager);
         this.stockRecyclerView.setAdapter(this.stockAdapter);
     }
@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             setError("stock " + ticker + " exists!");
                         }
-
                     }
                 }
         );
