@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateView() {
         for (Stock s:stocks) {
-            this.textViewOutput.setText(s.getRaw());
+            this.textViewOutput.setText(s.getLongName() + " - " + s.getPrice());
         }
     }
 
