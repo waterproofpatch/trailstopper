@@ -109,12 +109,12 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.start();
 
+        final Stock stock = new Stock(ticker);
+        stocks.add(stock);
+
         // Instantiate the RequestQueue.
         String urlCurrentDay = "https://finance.yahoo.com/quote/" + ticker;
         String url5day = "https://query1.finance.yahoo.com/v8/finance/chart/"+ticker+"?region=US&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=5d&corsDomain=finance.yahoo.com&.tsrc=finance";
-        final int numRequests = 2;
-        final JSONObject[] jsonObjects = new JSONObject[numRequests];
-        final CountDownLatch countdownLatch = new CountDownLatch(numRequests);
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, urlCurrentDay,
@@ -123,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.i("stringRequest", "got response!");
                         try {
-                            jsonObjects[0] = ResponseJsonParser.parseIntoJson(response);
+                            stock.getAttributes(ResponseJsonParser.parseIntoJson(response));
+                            updateView();
                         } catch (JSONException e) {
                             e.printStackTrace();
                             setError("Failed parsing stock data for " + ticker + ": " + e.getMessage());
@@ -144,10 +145,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("jsonObjectRequest", "got response!");
-                        jsonObjects[1] = response;
+                        // set these new attrs
+                        updateView();
                     }
                 }, new Response.ErrorListener() {
-
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         setError("That didn't work! " + error.toString());
@@ -157,32 +158,5 @@ public class MainActivity extends AppCompatActivity {
         // Add the requests to the RequestQueue.
         queue.add(stringRequest);
         queue.add(jsonObjectRequest);
-
-        queue.addRequestEventListener(new RequestQueue.RequestEventListener() {
-            @Override
-            public void onRequestEvent(Request<?> request, int event) {
-                if (event == RequestQueue.RequestEvent.REQUEST_FINISHED) {
-                    Log.i("onRequestEvent", "Request " + request + " is finished");
-                    countdownLatch.countDown();
-
-                    if (countdownLatch.getCount() == 0) {
-                        // create the stock object
-                        try {
-                            Stock stock = new Stock(jsonObjects[0]);
-                            stocks.add(stock);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            setError("Failed constructing stock data for " + ticker + ": " + e.getMessage());
-                            return;
-                        }
-
-                        // update the view now that we have a new stock object
-                        updateView();
-                    }
-                }
-            }
-        });
-
-        queue.start();
         }
 }

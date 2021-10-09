@@ -36,7 +36,7 @@ public class Stock {
         return ticker;
     }
 
-    private void getAttributes(JSONObject stockObject) throws JSONException {
+    public void getAttributes(JSONObject stockObject) throws JSONException {
         this.ticker = stockObject.getString("symbol");
         this.raw = stockObject.toString();
         this.price = stockObject.getJSONObject("price").getJSONObject("regularMarketPrice").getString("fmt");
@@ -45,7 +45,7 @@ public class Stock {
         this.averageDailyVolume3Month = stockObject.getJSONObject("price").getJSONObject("averageDailyVolume3Month").getString("longFmt");
     }
 
-    public Stock(JSONObject stockObject) throws JSONException {
-        this.getAttributes(stockObject);
+    public Stock(String ticker) {
+        this.ticker = ticker;
       }
 }
