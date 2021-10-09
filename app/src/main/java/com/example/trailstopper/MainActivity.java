@@ -90,10 +90,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://finance.yahoo.com/quote/" + ticker;
+        String urlCurrentDay = "https://finance.yahoo.com/quote/" + ticker;
+        String url5day = "https://query1.finance.yahoo.com/v8/finance/chart/"+ticker+"?region=US&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=5d&corsDomain=finance.yahoo.com&.tsrc=finance";
 
         // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, urlCurrentDay,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
