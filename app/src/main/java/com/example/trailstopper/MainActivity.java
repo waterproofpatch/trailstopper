@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                         if (stockExists(ticker) == false) {
                             makeRequest(ticker);
                         } else {
-                            Log.e("onClick", "stock " + ticker + " exists!");
+                            setError("stock " + ticker + " exists!");
                         }
 
                     }
@@ -94,11 +94,12 @@ public class MainActivity extends AppCompatActivity {
             stockAdapter.notifyDataSetChanged();
         }
         else {
-            Log.e("updateView", "stockAdapter is null!");
+            setError("stockAdapter is null!");
         }
     }
 
     private void setError(String error) {
+        Log.e("setError", error);
     }
 
     private void makeRequest(final String ticker) {
