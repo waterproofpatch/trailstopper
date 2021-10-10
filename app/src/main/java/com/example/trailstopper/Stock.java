@@ -7,6 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Stock {
     private String ticker;
     private String raw;
@@ -15,12 +18,19 @@ public class Stock {
     private String averageDailyVolume3Month;
     private String regularMarketPreviousClose;
 
+
+    private double atr;
+
     static JSONObject parseCurrentDayAttributes(String content) throws JSONException {
         String json_piece = content.split("root.App.main =")[1].split("\\(this\\)")[0].split("\\;\\n\\}")[0].trim();
 
         JSONObject jObject = new JSONObject(json_piece);
         JSONObject obj = jObject.getJSONObject("context").getJSONObject("dispatcher").getJSONObject("stores").getJSONObject("QuoteSummaryStore");
         return obj;
+    }
+
+    public double getAtr() {
+        return atr;
     }
 
     public String getPrice() {
@@ -77,16 +87,30 @@ public class Stock {
         current high less the current low; the absolute value of the current high less the previous
         close; and the absolute value of the current low less the previous close. The ATR is then a
         moving average, generally using 14 days, of the true ranges. */
+        ArrayList<Double> trueRanges = new ArrayList<>();
         for (int day = 14; day > 0; day--) {
             double curHigh = highArray.getDouble(day);
             double curLow = lowArray.getDouble(day);
             double prevCLose = closingArray.getDouble(day-1);
+
+            // first calculation
+            double calc1 = curHigh - curLow;
+            double calc2 = Math.abs(curHigh - prevCLose);
+            double calc3 = Math.abs(curLow - prevCLose);
+            double trueRange = Math.max(calc3, Math.max(calc1, calc2));
+            Log.i("calculateTrailStop", "calc1: " + calc1 + ", calc2: " + calc2 +", calc3: " + calc3 + ", trueRange: " + trueRange);
+            trueRanges.add(trueRange);
         }
 
-        for (int i = 0; i < closingArray.length(); i++) {
-            double closingPrice = closingArray.getDouble(i);
+        // now that we have each day's TR, we calculate the moving average therein
+        double totalRange = 0;
+        for (Double trueRange : trueRanges) {
+            totalRange += trueRange;
         }
-        Log.i("getFiveDayAttributes", "ok");
+        double atr = totalRange / (double)trueRanges.size();
+        Log.i("calculateTrailStop", "ATR is " + atr);
+
+        this.atr = atr;
     }
 
     public Stock(String ticker) {

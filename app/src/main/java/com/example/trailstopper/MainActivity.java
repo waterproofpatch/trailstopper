@@ -130,13 +130,12 @@ public class MainActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                             setError("Failed parsing current stock data for " + ticker + ": " + e.getMessage());
-                            return;
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                setError("That didn't work! " + error.toString());
+                setError("Error with volley: " + error.toString());
             }
         });
 
@@ -146,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("jsonObjectRequest", "got response!");
-                        // set these new attrs
                         try {
                             stock.calculateTrailStop(response);
                             updateView();
@@ -156,18 +154,18 @@ public class MainActivity extends AppCompatActivity {
                         } catch (StockParsingException e) {
                             e.printStackTrace();
                             setError("Failed parsing five day stock data for " + ticker + ": " + e.getMessage());
-
                         }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        setError("That didn't work! " + error.toString());
+                        setError("Error with volley: " + error.toString());
                     }
                 });
 
         // Add the requests to the RequestQueue.
         queue.add(stringRequest);
         queue.add(jsonObjectRequest);
+
         }
 }

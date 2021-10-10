@@ -5,6 +5,7 @@
     <string name="error">Error</string>
     <string name="ok">Ok</string>
     <string name="no">No</string>
+    <string name="atr">ATR</string>
 
 
 </resources>

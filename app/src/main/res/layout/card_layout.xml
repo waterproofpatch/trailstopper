@@ -26,7 +26,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="156dp">
 
         <!--Text View to display Course Name-->
         <TextView
@@ -40,17 +40,25 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!--Text VIew to display COurse Rating-->
-        <!--Image used in present in drawable folder-->
         <TextView
             android:id="@+id/price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/ticker"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="94dp"
             android:drawablePadding="2dp"
-            android:text="@string/price"
-            />
+            android:text="@string/price" />
+
+        <TextView
+            android:id="@+id/atr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ticker"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="73dp"
+            android:drawablePadding="2dp"
+            android:text="@string/atr" />
+
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
