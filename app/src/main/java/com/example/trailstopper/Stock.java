@@ -73,7 +73,10 @@ public class Stock {
             throw new StockParsingException("Array lengths are not big enough!");
         }
 
-        /* The true range indicator is taken as the greatest of the following: current high less the current low; the absolute value of the current high less the previous close; and the absolute value of the current low less the previous close. The ATR is then a moving average, generally using 14 days, of the true ranges. */
+        /* The true range indicator is taken as the greatest of the following:
+        current high less the current low; the absolute value of the current high less the previous
+        close; and the absolute value of the current low less the previous close. The ATR is then a
+        moving average, generally using 14 days, of the true ranges. */
         for (int day = 14; day > 0; day--) {
             double curHigh = highArray.getDouble(day);
             double curLow = lowArray.getDouble(day);
