@@ -94,8 +94,8 @@ public class Stock {
         close; and the absolute value of the current low less the previous close. The ATR is then a
         moving average, generally using 14 days, of the true ranges. */
         ArrayList<Double> trueRanges = new ArrayList<>();
-        ArrayList<Double> wildersAverages = new ArrayList<>();
-        for (int day = 14; day > 0; day--) {
+        double prevAtr = 0.0;
+        for (int day = 1; day < 15; day++) {
             double curHigh = highArray.getDouble(day);
             double curLow = lowArray.getDouble(day);
             double prevCLose = closingArray.getDouble(day-1);
@@ -109,8 +109,8 @@ public class Stock {
             trueRanges.add(trueRange);
 
             // WMAi = WMAi-1 + (Pricei - WMAi-1) / N
-            // TBD
-            }
+            prevAtr = (prevAtr + (closingArray.getDouble(day) - prevAtr)) / 14.0;
+        }
 
         // now that we have each day's TR, we calculate the moving average therein
         double totalRange = 0;
@@ -119,10 +119,11 @@ public class Stock {
         }
 
         this.atr = totalRange / (double)trueRanges.size();
+        //this.atr = prevAtr;
         Log.i("calculateTrailStop", "ATR is " + this.atr);
 
-        this.trailStop = Double.valueOf(closingArray.get(0).toString()).doubleValue() - (2.5 * atr);
-        this.trailStopPct = 100.0 - (trailStop / Double.valueOf(closingArray.get(0).toString()).doubleValue()) * 100.0;
+        this.trailStop = Double.valueOf(closingArray.get(0).toString()).doubleValue() - (2.5 * this.atr);
+        this.trailStopPct = 100.0 - (this.trailStop / Double.valueOf(closingArray.get(0).toString()).doubleValue()) * 100.0;
     }
 
     public Stock(String ticker) {
