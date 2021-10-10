@@ -78,5 +78,20 @@
             android:drawablePadding="2dp"
             android:text="@string/trail_stop" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/trail_stop"
+            android:layout_marginStart="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonRemoveStock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+        </LinearLayout>
+
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
