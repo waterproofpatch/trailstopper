@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -100,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setError(String error) {
         Log.e("setError", error);
+        ErrorDialogFragment frag = new ErrorDialogFragment();
+        frag.setMessage(error);
+        frag.show(getFragmentManager(), "setError");
     }
 
     private void makeRequest(final String ticker) {

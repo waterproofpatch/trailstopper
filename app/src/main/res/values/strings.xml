@@ -2,5 +2,9 @@
     <string name="app_name">TrailStopper</string>
     <string name="stock_name">Stock Name</string>
     <string name="price">Price</string>
+    <string name="error">Error</string>
+    <string name="ok">Ok</string>
+    <string name="no">No</string>
+
 
 </resources>
