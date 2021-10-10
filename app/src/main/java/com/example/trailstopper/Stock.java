@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.HashMap;
 
 public class Stock {
@@ -31,8 +32,10 @@ public class Stock {
         return obj;
     }
 
-    public double getAtr() {
-        return atr;
+    public String getAtr() {
+        Formatter formatter = new Formatter();
+        formatter.format("%.2f", atr);
+        return formatter.toString();
     }
 
     public String getPrice() {
@@ -55,12 +58,16 @@ public class Stock {
         return ticker;
     }
 
-    public double getTrailStop() {
-        return trailStop;
+    public String getTrailStop() {
+        Formatter formatter = new Formatter();
+        formatter.format("%.2f", trailStop);
+        return formatter.toString();
     }
 
-    public double getTrailStopPct() {
-        return trailStopPct;
+    public String getTrailStopPct() {
+        Formatter formatter = new Formatter();
+        formatter.format("%.2f", trailStopPct);
+        return formatter.toString();
     }
 
     public void getCurrentDayAttributes(JSONObject stockObject) throws JSONException {
