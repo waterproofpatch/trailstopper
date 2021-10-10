@@ -83,6 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/trail_stop"
             android:layout_marginStart="10dp"
+            android:background="#00FFFFFF"
             android:orientation="horizontal">
 
             <Button
@@ -90,7 +91,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:background="#00F40303"
+                android:text="Remove"
+                android:textColor="#FF0000" />
         </LinearLayout>
 
     </RelativeLayout>
