@@ -39,6 +39,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
         holder.name.setText(stock.getLongName());
         holder.price.setText("Current: " + stock.getPrice());
         holder.atr.setText("ATR: " + stock.getAtr());
+        holder.trailStop.setText("Trail Stop: " + stock.getTrailStop());
     }
 
     @Override
@@ -55,6 +56,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
         private TextView price;
         private TextView atr;
         private TextView name;
+        private TextView trailStop;
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
@@ -62,6 +64,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
             name = itemView.findViewById(R.id.name);
             price = itemView.findViewById(R.id.price);
             atr = itemView.findViewById(R.id.atr);
+            trailStop = itemView.findViewById(R.id.trail_stop);
         }
     }
 }

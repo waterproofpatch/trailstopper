@@ -17,9 +17,10 @@ public class Stock {
     private String longName;
     private String averageDailyVolume3Month;
     private String regularMarketPreviousClose;
-
-
     private double atr;
+
+
+    private double trailStop;
 
     static JSONObject parseCurrentDayAttributes(String content) throws JSONException {
         String json_piece = content.split("root.App.main =")[1].split("\\(this\\)")[0].split("\\;\\n\\}")[0].trim();
@@ -49,12 +50,12 @@ public class Stock {
         return regularMarketPreviousClose;
     }
 
-    public String getRaw() {
-        return raw;
-    }
-
     public String getTicker() {
         return ticker;
+    }
+
+    public double getTrailStop() {
+        return trailStop;
     }
 
     public void getCurrentDayAttributes(JSONObject stockObject) throws JSONException {
@@ -107,13 +108,15 @@ public class Stock {
         for (Double trueRange : trueRanges) {
             totalRange += trueRange;
         }
-        double atr = totalRange / (double)trueRanges.size();
-        Log.i("calculateTrailStop", "ATR is " + atr);
 
-        this.atr = atr;
+        this.atr = totalRange / (double)trueRanges.size();
+        Log.i("calculateTrailStop", "ATR is " + this.atr);
+
+        this.trailStop = Double.valueOf(closingArray.get(0).toString()).doubleValue() - (3.0 * atr);
+
     }
 
     public Stock(String ticker) {
         this.ticker = ticker;
-      }
+    }
 }

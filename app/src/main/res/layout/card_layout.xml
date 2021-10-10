@@ -26,12 +26,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="156dp">
+        android:layout_height="wrap_content">
 
         <!--Text View to display Course Name-->
         <TextView
             android:id="@+id/ticker"
-            android:layout_width="186dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
@@ -42,23 +42,21 @@
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="186dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/ticker"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toRightOf="@id/ticker"
             android:text="@string/long_name"
             android:textColor="@color/black"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="italic" />
 
         <TextView
             android:id="@+id/price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ticker"
+            android:layout_below="@id/name"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="94dp"
             android:drawablePadding="2dp"
             android:text="@string/price" />
 
@@ -66,11 +64,19 @@
             android:id="@+id/atr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ticker"
+            android:layout_below="@id/price"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="73dp"
             android:drawablePadding="2dp"
             android:text="@string/atr" />
+
+        <TextView
+            android:id="@+id/trail_stop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/atr"
+            android:layout_marginStart="10dp"
+            android:drawablePadding="2dp"
+            android:text="@string/trail_stop" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
