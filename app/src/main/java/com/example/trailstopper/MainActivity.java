@@ -22,8 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -114,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Instantiate the RequestQueue.
         String urlCurrentDay = "https://finance.yahoo.com/quote/" + ticker;
-        String url5day = "https://query1.finance.yahoo.com/v8/finance/chart/"+ticker+"?region=US&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=5d&corsDomain=finance.yahoo.com&.tsrc=finance";
+        String url5day = "https://query1.finance.yahoo.com/v8/finance/chart/"+ticker+"?region=US&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=14d&corsDomain=finance.yahoo.com&.tsrc=finance";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, urlCurrentDay,
@@ -123,11 +121,11 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.i("stringRequest", "got response!");
                         try {
-                            stock.getAttributes(ResponseJsonParser.parseIntoJson(response));
+                            stock.getCurrentDayAttributes(Stock.parseCurrentDayAttributes(response));
                             updateView();
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            setError("Failed parsing stock data for " + ticker + ": " + e.getMessage());
+                            setError("Failed parsing current stock data for " + ticker + ": " + e.getMessage());
                             return;
                         }
                     }
@@ -141,12 +139,17 @@ public class MainActivity extends AppCompatActivity {
         // 5 day request
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url5day, null, new Response.Listener<JSONObject>() {
-
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("jsonObjectRequest", "got response!");
                         // set these new attrs
-                        updateView();
+                        try {
+                            stock.getFiveDayAttributes(response);
+                            updateView();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            setError("Failed parsing five dat stock data for " + ticker + ": " + e.getMessage());
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
