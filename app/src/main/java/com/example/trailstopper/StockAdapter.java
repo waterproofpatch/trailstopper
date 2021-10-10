@@ -39,7 +39,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
         holder.name.setText(stock.getLongName());
         holder.price.setText("Current: " + stock.getPrice());
         holder.atr.setText("ATR: " + stock.getAtr());
-        holder.trailStop.setText("Trail Stop: " + stock.getTrailStop());
+        holder.trailStop.setText("Trail Stop: " + stock.getTrailStop() + " (" + stock.getTrailStopPct() +"%)");
     }
 
     @Override
