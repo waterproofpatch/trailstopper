@@ -95,15 +95,25 @@ public class Stock {
         moving average, generally using 14 days, of the true ranges. */
         ArrayList<Double> trueRanges = new ArrayList<>();
         double prevAtr = 0.0;
-        for (int day = 1; day < 15; day++) {
+        for (int day = 0; day < 14; day++) {
             double curHigh = highArray.getDouble(day);
             double curLow = lowArray.getDouble(day);
-            double prevCLose = closingArray.getDouble(day-1);
+            double prevClose = 0.0;
+            if (day > 0) {
+                prevClose = closingArray.getDouble(day-1);
+            }
 
             // first calculation
             double calc1 = curHigh - curLow;
-            double calc2 = Math.abs(curHigh - prevCLose);
-            double calc3 = Math.abs(curLow - prevCLose);
+            double calc2 = 0.0;
+            if (prevClose > 0.0) {
+                calc2 = Math.abs(curHigh - prevClose);
+            }
+            double calc3 = 0.0;
+            if (prevClose > 0.0) {
+                calc3 = Math.abs(curLow - prevClose);
+            }
+
             double trueRange = Math.max(calc3, Math.max(calc1, calc2));
             Log.i("calculateTrailStop", "calc1: " + calc1 + ", calc2: " + calc2 +", calc3: " + calc3 + ", trueRange: " + trueRange);
             trueRanges.add(trueRange);
@@ -122,8 +132,8 @@ public class Stock {
         //this.atr = prevAtr;
         Log.i("calculateTrailStop", "ATR is " + this.atr);
 
-        this.trailStop = Double.valueOf(closingArray.get(0).toString()).doubleValue() - (2.5 * this.atr);
-        this.trailStopPct = 100.0 - (this.trailStop / Double.valueOf(closingArray.get(0).toString()).doubleValue()) * 100.0;
+        this.trailStop = Double.valueOf(closingArray.get(13).toString()).doubleValue() - (2.5 * this.atr);
+        this.trailStopPct = 100.0 - (this.trailStop / Double.valueOf(closingArray.get(13).toString()).doubleValue()) * 100.0;
     }
 
     public Stock(String ticker) {
