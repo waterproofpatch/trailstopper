@@ -94,6 +94,7 @@ public class Stock {
         close; and the absolute value of the current low less the previous close. The ATR is then a
         moving average, generally using 14 days, of the true ranges. */
         ArrayList<Double> trueRanges = new ArrayList<>();
+        ArrayList<Double> wildersAverages = new ArrayList<>();
         for (int day = 14; day > 0; day--) {
             double curHigh = highArray.getDouble(day);
             double curLow = lowArray.getDouble(day);
@@ -106,7 +107,10 @@ public class Stock {
             double trueRange = Math.max(calc3, Math.max(calc1, calc2));
             Log.i("calculateTrailStop", "calc1: " + calc1 + ", calc2: " + calc2 +", calc3: " + calc3 + ", trueRange: " + trueRange);
             trueRanges.add(trueRange);
-        }
+
+            // WMAi = WMAi-1 + (Pricei - WMAi-1) / N
+            // TBD
+            }
 
         // now that we have each day's TR, we calculate the moving average therein
         double totalRange = 0;
