@@ -56,12 +56,33 @@ public class Stock {
         this.averageDailyVolume3Month = stockObject.getJSONObject("price").getJSONObject("averageDailyVolume3Month").getString("longFmt");
     }
 
-    public void getFiveDayAttributes(JSONObject stockObject) throws JSONException {
+    public void calculateTrailStop(JSONObject stockObject) throws JSONException, StockParsingException {
         JSONArray result = stockObject.getJSONObject("chart").getJSONArray("result");
         JSONObject indicators = result.getJSONObject(0).getJSONObject("indicators");
         JSONObject fiveDayDict = indicators.getJSONArray("quote").getJSONObject(0);
+
         JSONArray closingArray = fiveDayDict.getJSONArray("close");
+        JSONArray highArray = fiveDayDict.getJSONArray("high");
+        JSONArray lowArray = fiveDayDict.getJSONArray("low");
         JSONArray volumeArray = fiveDayDict.getJSONArray("volume");
+
+        if (closingArray.length() < 15 ||
+        highArray.length() < 15 ||
+        lowArray.length() < 15) {
+            Log.e("getFiveDayAttributes" , "Arrays not long enough!");
+            throw new StockParsingException("Array lengths are not big enough!");
+        }
+
+        /* The true range indicator is taken as the greatest of the following: current high less the current low; the absolute value of the current high less the previous close; and the absolute value of the current low less the previous close. The ATR is then a moving average, generally using 14 days, of the true ranges. */
+        for (int day = 14; day > 0; day--) {
+            double curHigh = highArray.getDouble(day);
+            double curLow = lowArray.getDouble(day);
+            double prevCLose = closingArray.getDouble(day-1);
+        }
+
+        for (int i = 0; i < closingArray.length(); i++) {
+            double closingPrice = closingArray.getDouble(i);
+        }
         Log.i("getFiveDayAttributes", "ok");
     }
 

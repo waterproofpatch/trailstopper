@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Instantiate the RequestQueue.
         String urlCurrentDay = "https://finance.yahoo.com/quote/" + ticker;
-        String url5day = "https://query1.finance.yahoo.com/v8/finance/chart/"+ticker+"?region=US&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=14d&corsDomain=finance.yahoo.com&.tsrc=finance";
+        String url5day = "https://query1.finance.yahoo.com/v8/finance/chart/"+ticker+"?region=US&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=15d&corsDomain=finance.yahoo.com&.tsrc=finance";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, urlCurrentDay,
@@ -144,11 +144,15 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("jsonObjectRequest", "got response!");
                         // set these new attrs
                         try {
-                            stock.getFiveDayAttributes(response);
+                            stock.calculateTrailStop(response);
                             updateView();
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            setError("Failed parsing five dat stock data for " + ticker + ": " + e.getMessage());
+                            setError("Failed parsing five day stock data for " + ticker + ": " + e.getMessage());
+                        } catch (StockParsingException e) {
+                            e.printStackTrace();
+                            setError("Failed parsing five day stock data for " + ticker + ": " + e.getMessage());
+
                         }
                     }
                 }, new Response.ErrorListener() {
