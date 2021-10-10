@@ -35,7 +35,8 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
         if (stock == null) {
             return;
         }
-        holder.ticker.setText(stock.getLongName());
+        holder.ticker.setText(stock.getTicker());
+        holder.name.setText(stock.getLongName());
         holder.price.setText("Current: " + stock.getPrice());
         holder.atr.setText("ATR: " + stock.getAtr());
     }
@@ -53,10 +54,12 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
         private TextView ticker;
         private TextView price;
         private TextView atr;
+        private TextView name;
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
             ticker = itemView.findViewById(R.id.ticker);
+            name = itemView.findViewById(R.id.name);
             price = itemView.findViewById(R.id.price);
             atr = itemView.findViewById(R.id.atr);
         }

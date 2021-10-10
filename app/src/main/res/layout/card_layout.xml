@@ -31,11 +31,23 @@
         <!--Text View to display Course Name-->
         <TextView
             android:id="@+id/ticker"
-            android:layout_width="match_parent"
+            android:layout_width="186dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:text="@string/stock_name"
+            android:text="@string/ticker"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="186dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/ticker"
+            android:text="@string/long_name"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
