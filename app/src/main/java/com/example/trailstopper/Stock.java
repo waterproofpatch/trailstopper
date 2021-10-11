@@ -20,11 +20,19 @@ public class Stock {
     private String regularMarketPreviousClose;
     private double atr;
     private double trailStop;
-
-
     private double trailStopPct;
 
-    static JSONObject parseCurrentDayAttributes(String content) throws JSONException {
+    // Instantiate the RequestQueue.
+
+    public static String getCurrentDayUrl(String ticker) {
+        return "https://finance.yahoo.com/quote/" + ticker;
+    }
+
+    public static String getIntervalUrl(String ticker, String numDays) {
+        return "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?region=US&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=" + numDays + "d&corsDomain=finance.yahoo.com&.tsrc=finance";
+    }
+
+    public static JSONObject parseCurrentDayAttributes(String content) throws JSONException {
         String json_piece = content.split("root.App.main =")[1].split("\\(this\\)")[0].split("\\;\\n\\}")[0].trim();
 
         JSONObject jObject = new JSONObject(json_piece);

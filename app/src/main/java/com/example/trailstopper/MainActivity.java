@@ -31,11 +31,14 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Stock> stocks;
     private Button buttonMakeRequest;
     private EditText editTextTicker;
+    private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        queue = Volley.newRequestQueue(this);
 
         // new backing for the recycler view
         this.stocks = new ArrayList<>();
@@ -107,19 +110,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeRequest(final String ticker) {
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.start();
-
         final Stock stock = new Stock(ticker);
         stocks.add(stock);
 
-        // Instantiate the RequestQueue.
-        String urlCurrentDay = "https://finance.yahoo.com/quote/" + ticker;
-        String url5day = "https://query1.finance.yahoo.com/v8/finance/chart/"+ticker+"?region=US&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=15d&corsDomain=finance.yahoo.com&.tsrc=finance";
-
         // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, urlCurrentDay,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, Stock.getCurrentDayUrl(ticker),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -141,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 5 day request
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url5day, null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, Stock.getIntervalUrl(ticker, "15"), null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("jsonObjectRequest", "got response!");
