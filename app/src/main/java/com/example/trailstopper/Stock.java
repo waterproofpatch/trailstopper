@@ -87,7 +87,7 @@ public class Stock {
         this.averageDailyVolume3Month = stockObject.getJSONObject("price").getJSONObject("averageDailyVolume3Month").getString("longFmt");
     }
 
-    public void calculateTrailStop(JSONObject stockObject) throws JSONException, StockParsingException {
+    public void calculateTrailStop(JSONObject stockObject, int numDays) throws JSONException, StockParsingException {
         JSONArray result = stockObject.getJSONObject("chart").getJSONArray("result");
         JSONObject indicators = result.getJSONObject(0).getJSONObject("indicators");
         JSONObject fiveDayDict = indicators.getJSONArray("quote").getJSONObject(0);
@@ -97,9 +97,9 @@ public class Stock {
         JSONArray lowArray = fiveDayDict.getJSONArray("low");
         JSONArray volumeArray = fiveDayDict.getJSONArray("volume");
 
-        if (closingArray.length() < 15 ||
-        highArray.length() < 15 ||
-        lowArray.length() < 15) {
+        if (closingArray.length() < numDays ||
+        highArray.length() < numDays ||
+        lowArray.length() < numDays) {
             Log.e("getFiveDayAttributes" , "Arrays not long enough!");
             throw new StockParsingException("Array lengths are not big enough!");
         }
@@ -110,7 +110,7 @@ public class Stock {
         moving average, generally using 14 days, of the true ranges. */
         ArrayList<Double> trueRanges = new ArrayList<>();
         double prevAtr = 0.0;
-        for (int day = 0; day < 14; day++) {
+        for (int day = 0; day < numDays - 1; day++) {
             double curHigh = highArray.getDouble(day);
             double curLow = lowArray.getDouble(day);
             double prevClose = 0.0;
@@ -134,7 +134,7 @@ public class Stock {
             trueRanges.add(trueRange);
 
             // WMAi = WMAi-1 + (Pricei - WMAi-1) / N
-            prevAtr = (prevAtr + (closingArray.getDouble(day) - prevAtr)) / 14.0;
+            prevAtr = (prevAtr + (closingArray.getDouble(day) - prevAtr)) / ((float)numDays-1);
         }
 
         // now that we have each day's TR, we calculate the moving average therein

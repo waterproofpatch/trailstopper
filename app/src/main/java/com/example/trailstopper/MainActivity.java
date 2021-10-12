@@ -134,14 +134,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 5 day request
+        // N day request
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, Stock.getIntervalUrl(ticker, "15"), null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("jsonObjectRequest", "got response!");
                         try {
-                            stock.calculateTrailStop(response);
+                            stock.calculateTrailStop(response, 15);
                             updateView();
                         } catch (JSONException e) {
                             e.printStackTrace();

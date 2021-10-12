@@ -1,32 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:paddingLeft="16dp"-->
-<!--    android:paddingRight="16dp" >-->
-
-<!--    <EditText-->
-<!--        android:id="@+id/editTextTicker"-->
-<!--        android:layout_width="185dp"-->
-<!--        android:layout_height="wrap_content" />-->
-
-<!--    <Button-->
-<!--        android:id="@+id/buttonMakeRequest"-->
-<!--        android:layout_width="181dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/editTextTicker"-->
-<!--        android:layout_alignParentRight="true"-->
-<!--        android:layout_marginTop="-48dp"-->
-<!--        android:layout_marginRight="10dp"-->
-<!--        android:text="Add" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/volleyResponseTextView"-->
-<!--        android:layout_width="395dp"-->
-<!--        android:layout_height="46dp"-->
-<!--        android:layout_below="@id/buttonMakeRequest" />-->
-<!--</RelativeLayout>-->
 
 <RelativeLayout
 xmlns:android="http://schemas.android.com/apk/res/android"
