@@ -22,8 +22,6 @@ public class Stock {
     private double trailStop;
     private double trailStopPct;
 
-    // Instantiate the RequestQueue.
-
     public static String getCurrentDayUrl(String ticker) {
         return "https://finance.yahoo.com/quote/" + ticker;
     }

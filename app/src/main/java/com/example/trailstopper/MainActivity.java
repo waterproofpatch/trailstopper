@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         String ticker = editTextTicker.getText().toString().toLowerCase().trim();
                         if (stockExists(ticker) == false) {
-                            makeRequest(ticker);
+                            makeRequests(ticker);
                         } else {
                             setError("stock " + ticker + " exists!");
                         }
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         frag.show(getFragmentManager(), "setError");
     }
 
-    private void makeRequest(final String ticker) {
+    private void makeRequests(final String ticker) {
         final Stock stock = new Stock(ticker);
         stocks.add(stock);
 
@@ -157,9 +157,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }){
 
-            /**
-             * Passing some request headers
-             */
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
