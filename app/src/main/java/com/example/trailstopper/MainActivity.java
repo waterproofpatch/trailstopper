@@ -4,13 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -23,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.i("stringRequest", "got response!");
                         try {
-                            stock.getCurrentDayAttributes(Stock.parseCurrentDayAttributes(response));
+                            stock.calculateCurrentDayAttributes(Stock.parseCurrentDayAttributes(response));
                             updateView();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -136,17 +138,14 @@ public class MainActivity extends AppCompatActivity {
 
         // N day request
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, Stock.getIntervalUrl(ticker, "15"), null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, Stock.getTechnicalUrl(ticker), null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("jsonObjectRequest", "got response!");
                         try {
-                            stock.calculateTrailStop(response, 15);
+                            stock.calculateTrailStop(response);
                             updateView();
                         } catch (JSONException e) {
-                            e.printStackTrace();
-                            setError("Failed parsing five day stock data for " + ticker + ": " + e.getMessage());
-                        } catch (StockParsingException e) {
                             e.printStackTrace();
                             setError("Failed parsing five day stock data for " + ticker + ": " + e.getMessage());
                         }
@@ -156,7 +155,18 @@ public class MainActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         setError("Error with volley: " + error.toString());
                     }
-                });
+                }){
+
+            /**
+             * Passing some request headers
+             */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                //headers.put("Content-Type", "application/json");
+                headers.put("Referer", "https://www.chartmill.com/stock/quote/"+ticker+"/technical=analysis");
+                return headers;
+            }};
 
         // Add the requests to the RequestQueue.
         queue.add(stringRequest);
