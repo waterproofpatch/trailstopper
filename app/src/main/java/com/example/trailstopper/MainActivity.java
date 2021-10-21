@@ -163,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                //headers.put("Content-Type", "application/json");
                 headers.put("Referer", "https://www.chartmill.com/stock/quote/"+ticker+"/technical=analysis");
                 return headers;
             }};

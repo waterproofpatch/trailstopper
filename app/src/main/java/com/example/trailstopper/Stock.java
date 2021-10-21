@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class Stock {
     private String ticker;
     private String raw;
-    private String price;
+    private double price;
     private String longName;
     private String averageDailyVolume3Month;
     private String regularMarketPreviousClose;
@@ -46,7 +46,7 @@ public class Stock {
         return formatter.toString();
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
@@ -81,7 +81,6 @@ public class Stock {
     public void calculateCurrentDayAttributes(JSONObject stockObject) throws JSONException {
         this.ticker = stockObject.getString("symbol");
         this.raw = stockObject.toString();
-        this.price = stockObject.getJSONObject("price").getJSONObject("regularMarketPrice").getString("fmt");
         this.regularMarketPreviousClose = stockObject.getJSONObject("price").getJSONObject("regularMarketPreviousClose").getString("fmt");
         this.longName = stockObject.getJSONObject("price").getString("longName");
         this.averageDailyVolume3Month = stockObject.getJSONObject("price").getJSONObject("averageDailyVolume3Month").getString("longFmt");
@@ -89,6 +88,10 @@ public class Stock {
 
     public void calculateTrailStop(JSONObject stockObject) throws JSONException {
         this.atr = stockObject.getJSONArray("result").getJSONObject(0).getJSONObject("technicals").getDouble("atr");
+        this.price = stockObject.getJSONArray("result").getJSONObject(0).getJSONObject("technicals").getDouble("close");
+        double atrp = (this.atr / this.price) * 100.0;
+        this.trailStopPct = atrp * 2.5;
+        this.trailStop = this.price - (this.price * (this.trailStopPct/100.0));
     }
 
     public Stock(String ticker) {
