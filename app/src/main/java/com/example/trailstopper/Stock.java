@@ -10,7 +10,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +22,6 @@ import java.util.TimerTask;
 
 public class Stock {
     private String ticker;
-    private String raw;
     private double price;
     private String longName;
     private String averageDailyVolume3Month;
@@ -90,7 +88,6 @@ public class Stock {
 
     public void calculateCurrentDayAttributes(JSONObject stockObject) throws JSONException {
         this.ticker = stockObject.getString("symbol");
-        this.raw = stockObject.toString();
         this.regularMarketPreviousClose = stockObject.getJSONObject("price").getJSONObject("regularMarketPreviousClose").getString("fmt");
         this.longName = stockObject.getJSONObject("price").getString("longName");
         this.averageDailyVolume3Month = stockObject.getJSONObject("price").getJSONObject("averageDailyVolume3Month").getString("longFmt");
