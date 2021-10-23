@@ -12,12 +12,10 @@ import java.util.ArrayList;
 
 public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> {
 
-    private Context context;
     private ArrayList<Stock> stockArrayList;
 
     // Constructor
     public StockAdapter(Context context, ArrayList<Stock> stockArrayList) {
-        this.context = context;
         this.stockArrayList = stockArrayList;
     }
 
@@ -76,7 +74,6 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
             atr = itemView.findViewById(R.id.atr);
             trailStop = itemView.findViewById(R.id.trail_stop);
             buttonRemoveStock = (Button)itemView.findViewById(R.id.buttonRemoveStock);
-
         }
     }
 }
