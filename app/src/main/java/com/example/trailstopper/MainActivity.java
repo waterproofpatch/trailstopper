@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void updateView() {
+    public void updateView() {
         if (stockAdapter != null) {
             stockAdapter.notifyDataSetChanged();
         }
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setError(String error) {
+    public void setError(String error) {
         Log.e("setError", error);
         ErrorDialogFragment frag = new ErrorDialogFragment();
         frag.setMessage(error);
@@ -112,60 +112,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeRequests(final String ticker) {
-        final Stock stock = new Stock(ticker);
+        Stock stock = new Stock(ticker, this);
         stocks.add(stock);
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, Stock.getCurrentDayUrl(ticker),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("stringRequest", "got response!");
-                        try {
-                            stock.calculateCurrentDayAttributes(Stock.parseCurrentDayAttributes(response));
-                            updateView();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            setError("Failed parsing current stock data for " + ticker + ": " + e.getMessage());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                setError("Error with volley: " + error.toString());
-            }
-        });
-
-        // N day request
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, Stock.getTechnicalUrl(ticker), null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i("jsonObjectRequest", "got response!");
-                        try {
-                            stock.calculateTrailStop(response);
-                            updateView();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            setError("Failed parsing five day stock data for " + ticker + ": " + e.getMessage());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        setError("Error with volley: " + error.toString());
-                    }
-                }){
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Referer", "https://www.chartmill.com/stock/quote/"+ticker+"/technical=analysis");
-                return headers;
-            }};
-
-        // Add the requests to the RequestQueue.
-        RequestQueueSingleton.getInstance(this).addToRequestQueue(stringRequest);
-        RequestQueueSingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        stock.update();
     }
 }

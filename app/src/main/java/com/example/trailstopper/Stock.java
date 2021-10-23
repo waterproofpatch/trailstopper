@@ -3,6 +3,13 @@ package com.example.trailstopper;
 
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Stock {
     private String ticker;
@@ -21,6 +29,7 @@ public class Stock {
     private double atr;
     private double trailStop;
     private double trailStopPct;
+    private MainActivity parentActivity;
 
     public static String getCurrentDayUrl(String ticker) {
         return "https://finance.yahoo.com/quote/" + ticker;
@@ -92,7 +101,65 @@ public class Stock {
         this.trailStop = this.price - (this.price * (this.trailStopPct/100.0));
     }
 
-    public Stock(String ticker) {
+    public void update() {
+        final Stock _this = this;
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, Stock.getCurrentDayUrl(ticker),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("stringRequest", "got response!");
+                        try {
+                            _this.calculateCurrentDayAttributes(Stock.parseCurrentDayAttributes(response));
+                            _this.parentActivity.updateView();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            _this.parentActivity.setError("Failed parsing current stock data for " + _this.ticker + ": " + e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                _this.parentActivity.setError("Error with volley: " + error.toString());
+            }
+        });
+
+        // N day request
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, Stock.getTechnicalUrl(ticker), null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i("jsonObjectRequest", "got response!");
+                        try {
+                            _this.calculateTrailStop(response);
+                            _this.parentActivity.updateView();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            _this.parentActivity.setError("Failed parsing five day stock data for " + _this.ticker + ": " + e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        _this.parentActivity.setError("Error with volley: " + error.toString());
+                    }
+                }){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Referer", "https://www.chartmill.com/stock/quote/"+_this.ticker+"/technical=analysis");
+                return headers;
+            }};
+
+        // Add the requests to the RequestQueue.
+        RequestQueueSingleton.getInstance(this.parentActivity).addToRequestQueue(stringRequest);
+        RequestQueueSingleton.getInstance(this.parentActivity).addToRequestQueue(jsonObjectRequest);
+    }
+
+    public Stock(String ticker, MainActivity parentActivity) {
         this.ticker = ticker;
+        this.parentActivity = parentActivity;
     }
 }
