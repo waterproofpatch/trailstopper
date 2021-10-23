@@ -10,21 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         String ticker = editTextTicker.getText().toString().toLowerCase().trim();
-                        if (stockExists(ticker) == false) {
-                            makeRequests(ticker);
+                        if (!stockExists(ticker)) {
+                            addNewStock(ticker);
                         } else {
                             setError("stock " + ticker + " exists!");
                         }
@@ -111,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
         frag.show(getFragmentManager(), "setError");
     }
 
-    private void makeRequests(final String ticker) {
-        Stock stock = new Stock(ticker, this);
+    private void addNewStock(final String ticker) {
+        Stock stock = new Stock(ticker, this, this.stocks);
         stocks.add(stock);
-        stock.update(stocks.indexOf(stock));
+        stock.startUpdates();
     }
 }

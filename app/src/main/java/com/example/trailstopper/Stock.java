@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Stock {
     private String ticker;
@@ -30,6 +32,7 @@ public class Stock {
     private double trailStop;
     private double trailStopPct;
     private MainActivity parentActivity;
+    private ArrayList<Stock> stockList;
 
     public static String getCurrentDayUrl(String ticker) {
         return "https://finance.yahoo.com/quote/" + ticker;
@@ -101,7 +104,8 @@ public class Stock {
         this.trailStop = this.price - (this.price * (this.trailStopPct/100.0));
     }
 
-    public void update(final int position) {
+    private void update(final int position) {
+        Log.i("update","Updating " + this.ticker + " position " + position);
         final Stock _this = this;
 
         // Request a string response from the provided URL.
@@ -158,8 +162,25 @@ public class Stock {
         RequestQueueSingleton.getInstance(this.parentActivity).addToRequestQueue(jsonObjectRequest);
     }
 
-    public Stock(String ticker, MainActivity parentActivity) {
+    public void startUpdates() {
+        final Stock _this = this;
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (_this.stockList.indexOf(_this) == -1) {
+                    Log.w("startUpdates", _this.ticker + " - looks like I've been removed");
+                    this.cancel();
+                } else {
+                    _this.update(_this.stockList.indexOf(_this));
+                }
+            }
+        }, 0, 10 * 1000);
+    }
+
+    public Stock(String ticker, MainActivity parentActivity, ArrayList<Stock> stockList) {
         this.ticker = ticker;
         this.parentActivity = parentActivity;
+        this.stockList = stockList;
     }
 }
