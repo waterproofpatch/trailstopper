@@ -33,14 +33,14 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Stock> stocks;
     private Button buttonMakeRequest;
     private EditText editTextTicker;
-    private RequestQueue queue;
+    //private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        queue = Volley.newRequestQueue(this);
+        //queue = Volley.newRequestQueue(this);
 
         // new backing for the recycler view
         this.stocks = new ArrayList<>();
@@ -165,8 +165,7 @@ public class MainActivity extends AppCompatActivity {
             }};
 
         // Add the requests to the RequestQueue.
-        queue.add(stringRequest);
-        queue.add(jsonObjectRequest);
-
-        }
+        RequestQueueSingleton.getInstance(this).addToRequestQueue(stringRequest);
+        RequestQueueSingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+    }
 }
