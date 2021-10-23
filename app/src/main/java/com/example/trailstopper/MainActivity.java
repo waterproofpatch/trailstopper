@@ -95,9 +95,9 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    public void updateView() {
+    public void updateView(int position) {
         if (stockAdapter != null) {
-            stockAdapter.notifyDataSetChanged();
+            stockAdapter.notifyItemChanged(position);
         }
         else {
             setError("stockAdapter is null!");
@@ -114,6 +114,6 @@ public class MainActivity extends AppCompatActivity {
     private void makeRequests(final String ticker) {
         Stock stock = new Stock(ticker, this);
         stocks.add(stock);
-        stock.update();
+        stock.update(stocks.indexOf(stock));
     }
 }

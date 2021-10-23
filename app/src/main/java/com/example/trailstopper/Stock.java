@@ -101,7 +101,7 @@ public class Stock {
         this.trailStop = this.price - (this.price * (this.trailStopPct/100.0));
     }
 
-    public void update() {
+    public void update(final int position) {
         final Stock _this = this;
 
         // Request a string response from the provided URL.
@@ -112,7 +112,7 @@ public class Stock {
                         Log.i("stringRequest", "got response!");
                         try {
                             _this.calculateCurrentDayAttributes(Stock.parseCurrentDayAttributes(response));
-                            _this.parentActivity.updateView();
+                            _this.parentActivity.updateView(position);
                         } catch (JSONException e) {
                             e.printStackTrace();
                             _this.parentActivity.setError("Failed parsing current stock data for " + _this.ticker + ": " + e.getMessage());
@@ -133,7 +133,7 @@ public class Stock {
                         Log.i("jsonObjectRequest", "got response!");
                         try {
                             _this.calculateTrailStop(response);
-                            _this.parentActivity.updateView();
+                            _this.parentActivity.updateView(position);
                         } catch (JSONException e) {
                             e.printStackTrace();
                             _this.parentActivity.setError("Failed parsing five day stock data for " + _this.ticker + ": " + e.getMessage());
