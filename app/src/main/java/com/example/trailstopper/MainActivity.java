@@ -17,21 +17,17 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView stockRecyclerView;
     private StockAdapter stockAdapter;
     private ArrayList<Stock> stocks;
     private Button buttonMakeRequest;
     private EditText editTextTicker;
     private SharedPreferences sharedPreferences;
     private final String sharedPrefsTickersKey = "tickers";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
-
-
 
         // new backing for the recycler view
         this.stocks = new ArrayList<>();
@@ -42,29 +38,35 @@ public class MainActivity extends AppCompatActivity {
         // register listeners with the GUI elements
         this.registerListeners();
 
-        // restore tickers
-        this.restorePrefs();
-
+        //this.restorePrefs();
     }
 
     @Override
     public void onPause() {
         Log.i("onPause", "pausing");
+        sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Set<String> tickerSet = new HashSet<>();
         for (Stock s: this.stocks) {
+            s.stopUpdates();
             tickerSet.add(s.getTicker());
         }
         editor.putStringSet(sharedPrefsTickersKey, tickerSet);
-        editor.commit();
+        editor.apply();
 
         // Always call the superclass so it can save the view hierarchy state
         super.onPause();
     }
 
-    public void restorePrefs() {
-        Log.i("loadPrefs", "restoring state");
+    @Override
+    public void onResume() {
+        this.restorePrefs();
+        super.onResume();
+    }
 
+    public void restorePrefs() {
+        Log.i("restorePrefs", "restoring state");
+        sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
         Set<String> tickers = sharedPreferences.getStringSet(sharedPrefsTickersKey, null);
         if (tickers == null) {
             Log.i("restorePrefs", "tickers is null, no tickers to restore");
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         // discover the UI elements and save them off
         this.buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
         this.editTextTicker = (EditText) findViewById(R.id.editTextTicker);
-        this.stockRecyclerView = findViewById(R.id.idRecyclerViewStock);
+        RecyclerView stockRecyclerView = findViewById(R.id.idRecyclerViewStock);
 
         // we are initializing our adapter class and passing our arraylist to it.
         this.stockAdapter = new StockAdapter(this, this.stocks);
@@ -91,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         // in below two lines we are setting LayoutManager and adapter to our recycler view.
-        this.stockRecyclerView.setLayoutManager(linearLayoutManager);
-        this.stockRecyclerView.setAdapter(this.stockAdapter);
+        stockRecyclerView.setLayoutManager(linearLayoutManager);
+        stockRecyclerView.setAdapter(this.stockAdapter);
     }
 
     private void registerListeners() {

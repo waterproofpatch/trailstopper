@@ -31,6 +31,7 @@ public class Stock {
     private double trailStopPct;
     private MainActivity parentActivity;
     private ArrayList<Stock> stockList;
+    private Timer timer;
 
     public static String getCurrentDayUrl(String ticker) {
         return "https://finance.yahoo.com/quote/" + ticker;
@@ -161,8 +162,8 @@ public class Stock {
 
     public void startUpdates() {
         final Stock _this = this;
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        this.timer = new Timer();
+        this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 if (_this.stockList.indexOf(_this) == -1) {
@@ -173,6 +174,12 @@ public class Stock {
                 }
             }
         }, 0, 10 * 1000);
+    }
+
+    public void stopUpdates() {
+        if (this.timer != null) {
+            this.timer.cancel();
+        }
     }
 
     public Stock(String ticker, MainActivity parentActivity, ArrayList<Stock> stockList) {
