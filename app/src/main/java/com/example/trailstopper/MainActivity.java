@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,14 +22,16 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Stock> stocks;
     private Button buttonMakeRequest;
     private EditText editTextTicker;
-    //private RequestQueue queue;
-
+    private SharedPreferences sharedPreferences;
+    private final String sharedPrefsTickersKey = "tickers";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //queue = Volley.newRequestQueue(this);
+        sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
+
+
 
         // new backing for the recycler view
         this.stocks = new ArrayList<>();
@@ -36,7 +41,41 @@ public class MainActivity extends AppCompatActivity {
 
         // register listeners with the GUI elements
         this.registerListeners();
+
+        // restore tickers
+        this.restorePrefs();
+
     }
+
+    @Override
+    public void onPause() {
+        Log.i("onPause", "pausing");
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> tickerSet = new HashSet<>();
+        for (Stock s: this.stocks) {
+            tickerSet.add(s.getTicker());
+        }
+        editor.putStringSet(sharedPrefsTickersKey, tickerSet);
+        editor.commit();
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onPause();
+    }
+
+    public void restorePrefs() {
+        Log.i("loadPrefs", "restoring state");
+
+        Set<String> tickers = sharedPreferences.getStringSet(sharedPrefsTickersKey, null);
+        if (tickers == null) {
+            Log.i("restorePrefs", "tickers is null, no tickers to restore");
+            return;
+        }
+        for (String ticker: tickers) {
+            this.addNewStock(ticker);
+        }
+    }
+
+
 
     private void initUiElements() {
         // discover the UI elements and save them off
