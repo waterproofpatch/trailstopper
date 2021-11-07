@@ -178,6 +178,7 @@ public class Stock {
 
     public void stopUpdates() {
         if (this.timer != null) {
+            Log.i("stopUpdates", this.getTicker() + " stopping updates");
             this.timer.cancel();
         }
     }

@@ -37,12 +37,10 @@ public class MainActivity extends AppCompatActivity {
 
         // register listeners with the GUI elements
         this.registerListeners();
-
-        //this.restorePrefs();
     }
 
     @Override
-    public void onPause() {
+    public void onStop() {
         Log.i("onPause", "pausing");
         sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -55,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
         // Always call the superclass so it can save the view hierarchy state
-        super.onPause();
+        super.onStop();
     }
 
     @Override
@@ -65,19 +63,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void restorePrefs() {
-        Log.i("restorePrefs", "restoring state");
+        Log.i("restorePrefs", "restoring state, " + this.stocks.size() + " stocks");
         sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
         Set<String> tickers = sharedPreferences.getStringSet(sharedPrefsTickersKey, null);
         if (tickers == null) {
             Log.i("restorePrefs", "tickers is null, no tickers to restore");
             return;
         }
-        for (String ticker: tickers) {
-            this.addNewStock(ticker);
+
+        if (tickers.size() != this.stocks.size()) {
+            Log.i("restorePrefs", "Tickers and tocks different lengths, re-adding all tickers");
+            for (String ticker: tickers) {
+                this.addNewStock(ticker);
+            }
+        } else {
+            // existing stocks, just restart the updates
+            for (Stock s : this.stocks) {
+                s.startUpdates();
+            }
         }
     }
-
-
 
     private void initUiElements() {
         // discover the UI elements and save them off
