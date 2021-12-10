@@ -30,20 +30,8 @@ public class Stock {
     private double trailStop;
     private double trailStopPct;
 
-    public static String getCurrentDayUrl(String ticker) {
-        return "https://finance.yahoo.com/quote/" + ticker;
-    }
-
     public static String getUpdateUrl(String ticker) {
         return "https://www.chartmill.com/chartmill-rest/screener/?sort=taRating&sorting=DESC&tickers="+ticker+"&start=0";
-    }
-
-    public static JSONObject parseCurrentDayAttributes(String content) throws JSONException {
-        String json_piece = content.split("root.App.main =")[1].split("\\(this\\)")[0].split("\\;\\n\\}")[0].trim();
-
-        JSONObject jObject = new JSONObject(json_piece);
-        JSONObject obj = jObject.getJSONObject("context").getJSONObject("dispatcher").getJSONObject("stores").getJSONObject("QuoteSummaryStore");
-        return obj;
     }
 
     public String getAtr() {
@@ -83,7 +71,7 @@ public class Stock {
         this.price = stockObject.getJSONArray("result").getJSONObject(0).getJSONObject("technicals").getDouble("close");
         double atrp = (this.atr / this.price) * 100.0;
         this.trailStopPct = atrp * 2.5;
-        this.trailStop = this.price - (this.price * (this.trailStopPct/100.0));
+        this.trailStop = this.price - (this.price * (this.trailStopPct / 100.0));
     }
 
     private void update(final int position) {

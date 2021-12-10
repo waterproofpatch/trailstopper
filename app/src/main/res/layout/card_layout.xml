@@ -94,6 +94,14 @@
                 android:background="#00F40303"
                 android:text="Remove"
                 android:textColor="#FF0000" />
+            <Button
+                android:id="@+id/buttonEditStock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#00F40303"
+                android:text="Edit"
+                android:textColor="@color/black" />
         </LinearLayout>
 
     </RelativeLayout>

@@ -47,6 +47,12 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
                 notifyDataSetChanged();
             }
         });
+        holder.buttonEditStock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -65,6 +71,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
         private TextView name;
         private TextView trailStop;
         private Button buttonRemoveStock;
+        private Button buttonEditStock;
 
         public Viewholder(@NonNull final View itemView) {
             super(itemView);
@@ -74,6 +81,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
             atr = itemView.findViewById(R.id.atr);
             trailStop = itemView.findViewById(R.id.trail_stop);
             buttonRemoveStock = (Button)itemView.findViewById(R.id.buttonRemoveStock);
+            buttonEditStock = (Button)itemView.findViewById(R.id.buttonEditStock);
         }
     }
 }
