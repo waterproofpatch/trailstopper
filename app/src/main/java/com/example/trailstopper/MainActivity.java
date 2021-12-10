@@ -1,6 +1,7 @@
 package com.example.trailstopper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     private StockAdapter stockAdapter;
     private ArrayList<Stock> stocks;
-    private Button buttonMakeRequest;
-    private EditText editTextTicker;
+    private Button addStockButton;
+    private EditText stockTickerEditText;
     private SharedPreferences sharedPreferences;
     private final String sharedPrefsTickersKey = "tickers";
 
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         // register listeners with the GUI elements
         this.registerListeners();
-
 
     }
     @Override
@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         }
         editor.putStringSet(sharedPrefsTickersKey, tickerSet);
         editor.apply();
-
         // Always call the superclass so it can save the view hierarchy state
         super.onStop();
     }
@@ -104,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
     public void restorePrefs() {
         Log.i("restorePrefs", "restoring state, " + this.stocks.size() + " stocks");
         sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Log.i("restorePrefs", "signature: " + defaultSharedPreferences.getString("signature", "default"));
+
         Set<String> tickers = sharedPreferences.getStringSet(sharedPrefsTickersKey, null);
         if (tickers == null) {
             Log.i("restorePrefs", "tickers is null, no tickers to restore");
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (tickers.size() != this.stocks.size()) {
-            Log.i("restorePrefs", "Tickers and tocks different lengths, re-adding all tickers");
+            Log.i("restorePrefs", "Tickers and stocks different lengths, re-adding all tickers");
             for (String ticker: tickers) {
                 this.addNewStock(ticker);
             }
@@ -125,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void initUiElements() {
         // discover the UI elements and save them off
-        this.buttonMakeRequest = (Button)findViewById(R.id.buttonMakeRequest);
-        this.editTextTicker = (EditText) findViewById(R.id.editTextTicker);
+        this.addStockButton = (Button)findViewById(R.id.buttonMakeRequest);
+        this.stockTickerEditText = (EditText) findViewById(R.id.editTextTicker);
         RecyclerView stockRecyclerView = findViewById(R.id.idRecyclerViewStock);
 
         // we are initializing our adapter class and passing our arraylist to it.
@@ -142,11 +144,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registerListeners() {
-        this.buttonMakeRequest.setOnClickListener(
+        this.addStockButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String ticker = editTextTicker.getText().toString().toLowerCase().trim();
+                        String ticker = stockTickerEditText.getText().toString().toLowerCase().trim();
                         if (!stockExists(ticker)) {
                             addNewStock(ticker);
                         } else {
