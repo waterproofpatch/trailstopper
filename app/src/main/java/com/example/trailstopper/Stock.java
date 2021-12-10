@@ -24,7 +24,6 @@ public class Stock {
     private String ticker;
     private double price;
     private String longName;
-    private String averageDailyVolume3Month;
     private String regularMarketPreviousClose;
     private double atr;
     private double trailStop;
@@ -51,51 +50,38 @@ public class Stock {
 
     public String getAtr() {
         Formatter formatter = new Formatter();
-        formatter.format("%.2f", atr);
+        formatter.format("%.2f", this.atr);
         return formatter.toString();
     }
 
     public double getPrice() {
-        return price;
+        return this.price;
     }
 
     public String getLongName() {
-        return longName;
-    }
-
-    public String getAverageDailyVolume3Month() {
-        return averageDailyVolume3Month;
-    }
-
-    public String getRegularMarketPreviousClose() {
-        return regularMarketPreviousClose;
+        return this.longName;
     }
 
     public String getTicker() {
-        return ticker;
+        return this.ticker;
     }
 
     public String getTrailStop() {
         Formatter formatter = new Formatter();
-        formatter.format("%.2f", trailStop);
+        formatter.format("%.2f", this.trailStop);
         return formatter.toString();
     }
 
     public String getTrailStopPct() {
         Formatter formatter = new Formatter();
-        formatter.format("%.2f", trailStopPct);
+        formatter.format("%.2f", this.trailStopPct);
         return formatter.toString();
-    }
-
-    public void calculateCurrentDayAttributes(JSONObject stockObject) throws JSONException {
-        this.ticker = stockObject.getString("symbol");
-        this.regularMarketPreviousClose = stockObject.getJSONObject("price").getJSONObject("regularMarketPreviousClose").getString("fmt");
-        this.longName = stockObject.getJSONObject("price").getString("longName");
-        this.averageDailyVolume3Month = stockObject.getJSONObject("price").getJSONObject("averageDailyVolume3Month").getString("longFmt");
     }
 
     public void calculateTrailStop(JSONObject stockObject) throws JSONException {
         this.atr = stockObject.getJSONArray("result").getJSONObject(0).getJSONObject("technicals").getDouble("atr");
+        this.ticker = stockObject.getJSONArray("result").getJSONObject(0).getString("ticker");
+        this.longName = stockObject.getJSONArray("result").getJSONObject(0).getString("name");
         this.price = stockObject.getJSONArray("result").getJSONObject(0).getJSONObject("technicals").getDouble("close");
         double atrp = (this.atr / this.price) * 100.0;
         this.trailStopPct = atrp * 2.5;
@@ -105,27 +91,6 @@ public class Stock {
     private void update(final int position) {
         Log.i("update","Updating " + this.ticker + " position " + position);
         final Stock _this = this;
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, Stock.getCurrentDayUrl(ticker),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("stringRequest", "got response!");
-                        try {
-                            _this.calculateCurrentDayAttributes(Stock.parseCurrentDayAttributes(response));
-                            _this.parentActivity.updateView(position);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            _this.parentActivity.setError("Failed parsing current stock data for " + _this.ticker + ": " + e.getMessage());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                _this.parentActivity.setError("Error with volley: " + error.toString());
-            }
-        });
 
         // N day request
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -156,7 +121,6 @@ public class Stock {
             }};
 
         // Add the requests to the RequestQueue.
-        RequestQueueSingleton.getInstance(this.parentActivity).addToRequestQueue(stringRequest);
         RequestQueueSingleton.getInstance(this.parentActivity).addToRequestQueue(jsonObjectRequest);
     }
 
