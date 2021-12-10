@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         this.stocks = new ArrayList<>();
 
         // discover the UI components
-        this.initUiElements();
+        this.discoverUIElements();
 
         // register listeners with the GUI elements
         this.registerListeners();
@@ -100,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    /**
+     * Restore preferences.
+     */
     public void restorePrefs() {
         Log.i("restorePrefs", "restoring state, " + this.stocks.size() + " stocks");
         sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
@@ -125,7 +128,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void initUiElements() {
+    /**
+     * Discover the UI elements.
+     */
+    private void discoverUIElements() {
         // discover the UI elements and save them off
         this.addStockButton = (Button)findViewById(R.id.buttonMakeRequest);
         this.stockTickerEditText = (EditText) findViewById(R.id.editTextTicker);
@@ -143,6 +149,9 @@ public class MainActivity extends AppCompatActivity {
         stockRecyclerView.setAdapter(this.stockAdapter);
     }
 
+    /**
+     * Register input listeners.
+     */
     private void registerListeners() {
         this.addStockButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -159,6 +168,12 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    /**
+     * Check if a stock exists.
+     * @param ticker to check.
+     * @return true if @c ticker exists.
+     * @return false if @c ticker does not exist.
+     */
     private boolean stockExists(String ticker) {
         for (Stock s : this.stocks) {
             if (s.getTicker().compareToIgnoreCase(ticker) == 0) {
@@ -168,6 +183,10 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Update the stock adapter at @c position.
+     * @param position in the stockAdapter to update.
+     */
     public void updateView(int position) {
         if (stockAdapter != null) {
             stockAdapter.notifyItemChanged(position);
@@ -177,6 +196,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Display an error to the user.
+     * @param error the error to display.
+     */
     public void setError(String error) {
         Log.e("setError", error);
         ErrorDialogFragment frag = new ErrorDialogFragment();
@@ -184,6 +207,10 @@ public class MainActivity extends AppCompatActivity {
         frag.show(getFragmentManager(), "setError");
     }
 
+    /**
+     * Add a new stock given a ticker.
+     * @param ticker for the stock to add.
+     */
     private void addNewStock(final String ticker) {
         Stock stock = new Stock(ticker, this, this.stocks);
         stocks.add(stock);
