@@ -110,8 +110,14 @@ public class Stock {
         RequestQueueSingleton.getInstance(this.parentActivity).addToRequestQueue(jsonObjectRequest);
     }
 
+    /**
+     * Start the update thread.
+     */
     public void startUpdates() {
         final Stock _this = this;
+        if (this.timer != null) {
+            throw new RuntimeException("Timer already active!");
+        }
         this.timer = new Timer();
         this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -126,11 +132,15 @@ public class Stock {
         }, 0, 10 * 1000);
     }
 
+    /**
+     * Stop the update thread.
+     */
     public void stopUpdates() {
         if (this.timer != null) {
             Log.i("stopUpdates", this.getTicker() + " stopping updates");
             this.timer.cancel();
         }
+        this.timer = null;
     }
 
     public Stock(String ticker, MainActivity parentActivity, ArrayList<Stock> stockList) {
