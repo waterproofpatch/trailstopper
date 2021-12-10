@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         this.registerListeners();
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -80,7 +81,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
-        Log.i("onPause", "pausing");
+        savePrefs();
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        this.restorePrefs();
+        super.onResume();
+    }
+
+    public void savePrefs() {
+        Log.i("savePrefs", "pausing");
         sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Set<String> tickerSet = new HashSet<>();
@@ -90,14 +102,6 @@ public class MainActivity extends AppCompatActivity {
         }
         editor.putStringSet(sharedPrefsTickersKey, tickerSet);
         editor.apply();
-        // Always call the superclass so it can save the view hierarchy state
-        super.onStop();
-    }
-
-    @Override
-    public void onResume() {
-        this.restorePrefs();
-        super.onResume();
     }
 
     /**
