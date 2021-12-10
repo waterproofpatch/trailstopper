@@ -8,7 +8,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,21 +21,20 @@ import java.util.TimerTask;
 
 public class Stock {
     private String ticker;
-    private double price;
     private String longName;
-    private String regularMarketPreviousClose;
-    private double atr;
-    private double trailStop;
-    private double trailStopPct;
     private MainActivity parentActivity;
     private ArrayList<Stock> stockList;
     private Timer timer;
+    private double price;
+    private double atr;
+    private double trailStop;
+    private double trailStopPct;
 
     public static String getCurrentDayUrl(String ticker) {
         return "https://finance.yahoo.com/quote/" + ticker;
     }
 
-    public static String getTechnicalUrl(String ticker) {
+    public static String getUpdateUrl(String ticker) {
         return "https://www.chartmill.com/chartmill-rest/screener/?sort=taRating&sorting=DESC&tickers="+ticker+"&start=0";
     }
 
@@ -94,7 +92,7 @@ public class Stock {
 
         // N day request
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, Stock.getTechnicalUrl(ticker), null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, Stock.getUpdateUrl(ticker), null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("jsonObjectRequest", "got response!");
