@@ -120,6 +120,7 @@ public class Stock {
         }
         this.timer = new Timer();
         this.timer.scheduleAtFixedRate(new TimerTask() {
+
             @Override
             public void run() {
                 if (_this.stockList.indexOf(_this) == -1) {
