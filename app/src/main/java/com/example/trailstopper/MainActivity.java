@@ -59,9 +59,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // action with ID action_refresh was selected
-            case R.id.action_refresh:
-                Toast.makeText(this, "Refresh selected", Toast.LENGTH_SHORT)
+            case R.id.action_clear:
+                Toast.makeText(this, "Removing all stocks...", Toast.LENGTH_SHORT)
                         .show();
+                this.stocks.clear();
+                this.updateView();
                 break;
             // action with ID action_settings was selected
             case R.id.action_settings:
@@ -81,17 +83,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
-        savePrefs();
+        saveStockTickers();
         super.onStop();
     }
 
     @Override
     public void onResume() {
-        this.restorePrefs();
+        this.restoreStockTickers();
         super.onResume();
     }
 
-    public void savePrefs() {
+    public void saveStockTickers() {
         Log.i("savePrefs", "pausing");
         sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Restore preferences.
      */
-    public void restorePrefs() {
+    public void restoreStockTickers() {
         Log.i("restorePrefs", "restoring state, " + this.stocks.size() + " stocks");
         sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -198,6 +200,9 @@ public class MainActivity extends AppCompatActivity {
         else {
             setError("stockAdapter is null!");
         }
+    }
+    public void updateView() {
+        stockAdapter.notifyDataSetChanged();
     }
 
     /**

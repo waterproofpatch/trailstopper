@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.1484375" />
         <entry key="app/src/main/res/drawable/toolbar.xml" value="0.12135416666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.16770833333333332" />
         <entry key="app/src/main/res/layout/activity_new_stock.xml" value="0.15364583333333334" />
@@ -11,6 +12,7 @@
         <entry key="app/src/main/res/layout/toolbar.xml" value="0.10520833333333333" />
         <entry key="app/src/main/res/menu/drawer_view.xml" value="0.10520833333333333" />
         <entry key="app/src/main/res/menu/manu.xml" value="0.13333333333333333" />
+        <entry key="app/src/main/res/menu/menu.xml" value="0.13333333333333333" />
         <entry key="app/src/main/res/xml/preferences.xml" value="0.20742753623188406" />
         <entry key="app/src/main/res/xml/root_preferences.xml" value="0.11927083333333334" />
         <entry key="app/src/main/res/xml/settings.xml" value="0.21965579710144928" />

@@ -4,9 +4,9 @@
 
     <!-- sample_menu.xml -->
     <item
-        android:id="@+id/action_refresh"
+        android:id="@+id/action_clear"
         android:orderInCategory="100"
-        android:title="Refresh"
+        android:title="Clear"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_settings"
