@@ -2,6 +2,7 @@ package com.example.trailstopper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,9 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), StockActivity.class);
+                Bundle b = new Bundle();
+                b.putString("ticker", stock.getTicker());
+                i.putExtras(b);
                 view.getContext().startActivity(i);
             }
         });
