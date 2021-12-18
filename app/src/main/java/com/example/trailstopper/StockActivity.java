@@ -16,11 +16,14 @@ public class StockActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock);
 
+        // initialize the stock data display
         Bundle b = getIntent().getExtras();
-        this.ticker = b.getString("ticker");
-
-        TextView tickerTextView = findViewById(R.id.tickerTextView);
-        tickerTextView.setText(this.ticker);
+        if (b != null) {
+            this.ticker = b.getString("ticker");
+            Log.i("onCreate", "using ticker " + this.ticker);
+            TextView tickerTextView = findViewById(R.id.stockTickerTextView);
+            tickerTextView.setText(this.ticker);
+        }
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
