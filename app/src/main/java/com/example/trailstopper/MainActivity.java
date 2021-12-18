@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("restorePrefs", "restoring state, " + this.stocks.size() + " stocks");
         sharedPreferences = getSharedPreferences(getLocalClassName(), MODE_PRIVATE);
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Log.i("restorePrefs", "signature: " + defaultSharedPreferences.getString("signature", "default"));
+        Log.i("restoreStockTickers", "stockRefreshRate: " + defaultSharedPreferences.getString("stock_refresh_rate", "default"));
 
         Set<String> tickers = sharedPreferences.getStringSet(sharedPrefsTickersKey, null);
         if (tickers == null) {

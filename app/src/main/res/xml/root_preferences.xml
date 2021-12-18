@@ -2,7 +2,7 @@
     <PreferenceCategory app:title="@string/stocks_header">
         <EditTextPreference
             app:key="signature"
-            app:title="@string/stock_refreshrate"
+            app:title="@string/stock_refresh_rate"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
