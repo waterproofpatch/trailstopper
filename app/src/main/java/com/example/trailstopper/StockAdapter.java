@@ -1,6 +1,7 @@
 package com.example.trailstopper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,12 @@ import java.util.ArrayList;
 public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> {
 
     private ArrayList<Stock> stockArrayList;
+    private Context context;
 
     // Constructor
     public StockAdapter(Context context, ArrayList<Stock> stockArrayList) {
         this.stockArrayList = stockArrayList;
+        this.context = context;
     }
 
     @NonNull
@@ -50,7 +53,8 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
         holder.buttonEditStock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                notifyDataSetChanged();
+                Intent i = new Intent(view.getContext(), StockActivity.class);
+                view.getContext().startActivity(i);
             }
         });
     }
