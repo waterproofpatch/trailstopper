@@ -47,7 +47,8 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.Viewholder> 
         holder.buttonRemoveStock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stockArrayList.remove(holder.getAdapterPosition());
+                Stock s = stockArrayList.remove(holder.getAdapterPosition());
+                s.stopUpdates();
                 notifyDataSetChanged();
             }
         });
