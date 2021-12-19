@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // existing stocks, just restart the updates
             for (Stock s : this.stocks) {
-                s.startUpdates();
+                s.startUpdates(this);
             }
         }
     }
@@ -221,8 +221,8 @@ public class MainActivity extends AppCompatActivity {
      * @param ticker for the stock to add.
      */
     private void addNewStock(final String ticker) {
-        Stock stock = new Stock(ticker, this, this.stocks);
+        Stock stock = new Stock(ticker, this.stocks);
         stocks.add(stock);
-        stock.startUpdates();
+        stock.startUpdates(this);
     }
 }

@@ -19,7 +19,6 @@ import java.util.TimerTask;
 public class Stock {
     private String ticker;
     private String longName;
-    private final MainActivity parentActivity;
     private final ArrayList<Stock> stockList;
     private Timer timer;
     private double price;
@@ -75,7 +74,7 @@ public class Stock {
      * Request stock metadata from remote API and set internal attributes.
      * @param position in the stock list so we can update the View.
      */
-    private void updateStockDataFromApi(final int position) {
+    private void updateStockDataFromApi(final int position, MainActivity activity) {
         Log.i("update","Updating " + this.ticker + " position " + position);
         final Stock _this = this;
 
@@ -88,12 +87,12 @@ public class Stock {
                         _this.calculateTrailStop(response);
 
                         // update the UI with latest information
-                        _this.parentActivity.updateView(position);
+                        activity.updateView(position);
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        _this.parentActivity.setError("Failed parsing five day stock data for " + _this.ticker + ": " + e.getMessage());
+                        activity.setError("Failed parsing five day stock data for " + _this.ticker + ": " + e.getMessage());
                     }
-                }, error -> _this.parentActivity.setError("Error with volley: " + error.toString())){
+                }, error -> activity.setError("Error with volley: " + error.toString())){
 
             @Override
             public Map<String, String> getHeaders() {
@@ -103,13 +102,13 @@ public class Stock {
             }};
 
         // Add the requests to the RequestQueue.
-        RequestQueueSingleton.getInstance(this.parentActivity).addToRequestQueue(jsonObjectRequest);
+        RequestQueueSingleton.getInstance(activity).addToRequestQueue(jsonObjectRequest);
     }
 
     /**
      * Start the update thread.
      */
-    public void startUpdates() {
+    public void startUpdates(MainActivity activity) {
         final Stock _this = this;
         if (this.timer != null) {
             throw new RuntimeException("Timer already active!");
@@ -123,7 +122,7 @@ public class Stock {
                     Log.w("startUpdates", _this.ticker + " - looks like I've been removed");
                     this.cancel();
                 } else {
-                    _this.updateStockDataFromApi(_this.stockList.indexOf(_this));
+                    _this.updateStockDataFromApi(_this.stockList.indexOf(_this), activity);
                 }
             }
         }, 0, 10 * 1000);
@@ -140,9 +139,8 @@ public class Stock {
         this.timer = null;
     }
 
-    public Stock(String ticker, MainActivity parentActivity, ArrayList<Stock> stockList) {
+    public Stock(String ticker, ArrayList<Stock> stockList) {
         this.ticker = ticker;
-        this.parentActivity = parentActivity;
         this.stockList = stockList;
     }
 }
